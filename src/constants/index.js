@@ -36,7 +36,7 @@ export const MOVIES_CATEGORIES = {
 if (process.env.NODE_ENV === "production") {
   apiKey = process.env.API_KEY;
 } else {
-  apiKey = require("../apiKey").API_KEY_BARE;
+  apiKey = require("../apikey").API_KEY_BARE;
 }
 
 export const API_KEY_PARAM = "?api_key=" + apiKey;
