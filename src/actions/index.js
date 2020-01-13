@@ -128,7 +128,7 @@ export function fetchGenresList(){
         .then(response => response.json())
       .then(json => json.results)
       .then(data => dispatch(fetchGenresSuccess(data)))
-      .catch(error => dispatch(fetchGenresFail(error)));
+      .catch(error => dispatch(fetchGenresFailure(error)));
     };
 }
 //FETCH MOVIES ACTION
