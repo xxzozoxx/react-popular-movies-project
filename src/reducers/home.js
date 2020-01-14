@@ -4,7 +4,8 @@ import {
     FETCH_MOVIES_FAILURE,
     SEARCH_MOVIE,
     SELECT_CATEGORY,
-    SELECT_LANGUAGE
+    SELECT_LANGUAGE,
+    RESET_SEARCH
 } from '../actions/types'
 
 const initState = {
@@ -20,12 +21,26 @@ const initState = {
         return { ...state, movies: action.data };
       case FETCH_MOVIES_FAILURE:
         return { ...state, error: action.error };
-      case SEARCH_MOVIE:
-        return { ...state, searchQuery: action.query };
+        case SEARCH_MOVIE:
+            return {
+              ...state,
+              searchQuery: action.query,
+              searchResults: [],
+              searchError: null
+            };
+        case RESET_SERACH:
+            return {
+               ...state,
+               searchQuery: "",
+               searchResults: [],
+               searchError: null
+                };    
       case SELECT_LANGUAGE:
         return { ...state, selectedLanguage: action.language };
       case SELECT_CATEGORY:
         return { ...state, selectedCategory: action.category };
+      case RESET_SEARCH:
+        return{...state}
       default:
         return state;
     }

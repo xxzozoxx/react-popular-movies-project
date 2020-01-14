@@ -1,6 +1,6 @@
 import {SELECT_CATEGORY,SELECT_LANGUAGE,
     FETCH_CONFIG,FETCH_CONFIG_FAILURE,FETCH_CONFIG_SUCCESS,
-    SEARCH_MOVIE,SEARCH_MOVIE_FAILURE,SEARCH_MOVIE_SUCCESS,
+    SEARCH_MOVIE,SEARCH_MOVIE_FAILURE,SEARCH_MOVIE_SUCCESS,RESET_SEARCH,
     FETCH_GENRES,FETCH_GENRES_FAILURE,FETCH_GENRES_SUCCESS,
     FETCH_MOVIES,FETCH_MOVIES_FAILURE,FETCH_MOVIES_SUCCESS,
     FETCH_MOVIE,FETCH_MOVIE_FAILURE,FETCH_MOVIE_SUCCESS,
@@ -100,6 +100,12 @@ export function searchMovieList(query){
         .then (movieList => dispatch(searchMovieSuccess(movieList,query)))
         .catch(error => dispatch(searchMovieFailure(error)))
     }
+}
+export function resetSearchMovies() {
+  return dispatch =>
+    dispatch({
+      type: RESET_SERACH
+    });
 }
 //FETCH GENRES ACTION
 function fetchGenres(){
