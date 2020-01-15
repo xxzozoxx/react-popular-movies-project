@@ -23,6 +23,7 @@ import {
     MOVIE_LANG_PARAMETER_AR,
     MOVIE_LANG_PARAMETER_US
   } from "../constants";
+  import { debounce } from "lodash";
   //CATEGORY ACTION
   export function changeCategory(category){
       return dispatch => 
@@ -90,16 +91,24 @@ function searchMovieFailure (error){
     }
     
 }
-export function searchMovieList(query){
-    let url = URL_SEARCH + query +API_KEY_ALT;
-    return dispatch =>{
-        dispatch(searchMovie(query));
-        return fetch(url)
-        .then(response => response.json())
-        .then(json => json.results)
-        .then (movieList => dispatch(searchMovieSuccess(movieList,query)))
-        .catch(error => dispatch(searchMovieFailure(error)))
-    }
+
+const debouncedSearch = debounce((dispatch, query) => {
+  let url = URL_SEARCH + query + API_KEY_ALT;
+  if (query.length === 0) {
+    return dispatch(resetSearchMovies());
+  }
+  dispatch(searchMovie(query));
+  return fetch(url)
+    .then(response => response.json())
+    .then(json => json.results)
+    .then(data => dispatch(searchMovieSuccess(data)))
+    .catch(error => dispatch(searchMovieFailure(error)));
+}, 600);
+
+export function searchMovieList(query) {
+  return dispatch => {
+    return debouncedSearch(dispatch, query);
+  };
 }
 export function resetSearchMovies() {
   return dispatch =>
