@@ -28,7 +28,7 @@ const initState = {
               searchResults: [],
               searchError: null
             };
-        case RESET_SERACH:
+        case RESET_SEARCH:
             return {
                ...state,
                searchQuery: "",
