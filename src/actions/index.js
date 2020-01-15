@@ -24,6 +24,7 @@ import {
     MOVIE_LANG_PARAMETER_US
   } from "../constants";
   import { debounce } from "lodash";
+import { breakStatement } from '@babel/types';
   //CATEGORY ACTION
   export function changeCategory(category){
       return dispatch => 
@@ -63,8 +64,7 @@ export function fetchConfigurations(){
         dispatch(fetchConfig);
         return fetch(URL_CONFIG + API_KEY)
         .then(response => response.json())
-        .then(json => json.results)
-        .then(data => dispatch(fetchConfigSuccess(data)))
+        .then(json => dispatch(fetchConfigSuccess(json)))
         .catch(error => dispatch(fetchConfigFailure(error)));
     };
 
@@ -141,7 +141,7 @@ export function fetchGenresList(){
         dispatch(fetchGenres)
         return fetch(URL_GENRES + API_KEY)
         .then(response => response.json())
-      .then(json => json.results)
+      .then(json => json.genres)
       .then(data => dispatch(fetchGenresSuccess(data)))
       .catch(error => dispatch(fetchGenresFailure(error)));
     };
@@ -160,7 +160,7 @@ function fetchMovies() {
     };
   }
   
-  function fetchMoviesFail(error) {
+  function fetchMoviesFailure(error) {
     return {
       type: FETCH_MOVIES_FAILURE,
       error
@@ -168,19 +168,17 @@ function fetchMovies() {
   }
   
   export function fetchMoviesList() {
-    return (dispatch, getState) => {
+    return (dispatch,getState) => {
       dispatch(fetchMovies());
-  
-      const category = MOVIES_CATEGORIES.POPULAR; 
+      const category = getState().home.selectedCategory;
       let url;
-  
-      switch (category) {
+      switch(category){
         case MOVIES_CATEGORIES.LATEST:
-          url = URL_MOVIES_LATEST;
+          url= URL_MOVIES_LATEST;
           break;
         case MOVIES_CATEGORIES.UPCOMING:
-          url = URL_MOVIES_UPCOMING;
-          break;
+            url= URL_MOVIES_UPCOMING;
+            break;
         case MOVIES_CATEGORIES.NOW_PLAYING:
           url = URL_MOVIES_NOW_PLAYING;
           break;
@@ -188,15 +186,14 @@ function fetchMovies() {
           url = URL_MOVIES_TOP_RATED;
           break;
         case MOVIES_CATEGORIES.POPULAR:
-        default:
-          url = URL_MOVIES_POPULAR;
+          default:
+            url = URL_MOVIES_POPULAR;   
       }
-  
       return fetch(url + API_KEY)
-        .then(response => response.json())
-        .then(json => json.results)
-        .then(data => dispatch(fetchMoviesSuccess(data)))
-        .catch(error => dispatch(fetchMoviesFail(error)));
+      .then(response => response.json())
+      .then(json => json.results)
+      .then(data => dispatch(fetchMovieSuccess(data)))
+      .catch(error => dispatch(fetchMoviesFailure(error)))
     };
   }
   
@@ -214,7 +211,7 @@ function fetchMovie() {
     };
   }
   
-  function fetchMovieFail(error) {
+  function fetchMovieFailure(error) {
     return {
       type: FETCH_MOVIE_FAILURE,
       error
@@ -228,7 +225,7 @@ function fetchMovie() {
       return fetch(url_movie)
         .then(response => response.json())
         .then(data => dispatch(fetchMovieSuccess(data)))
-        .catch(error => dispatch(fetchMovieFail(error)));
+        .catch(error => dispatch(fetchMovieFailure(error)));
     };
   }
   //FETCH REVIEW ACTION
@@ -245,7 +242,7 @@ function fetchMovie() {
     };
   }
   
-  function fetchReviewsFail(error) {
+  function fetchReviewsFailure(error) {
     return {
       type: FETCH_REVIEWS_FAILURE,
       error
@@ -261,7 +258,7 @@ function fetchMovie() {
         .then(data => {
           dispatch(fetchReviewsSuccess(data));
         })
-        .catch(error => dispatch(fetchReviewsFail(error)));
+        .catch(error => dispatch(fetchReviewsFailure(error)));
     };
   }
   
