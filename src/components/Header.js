@@ -1,6 +1,6 @@
 import React from "react";
 import {Navbar}from "react-bootstrap";
-import  SearchForm  from "./SearchForm";
+import { SearchForm } from "./SearchForm";
 import { Logo } from "./Logo";
 const Header = ({appName}) => {
   return (
