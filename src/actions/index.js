@@ -61,7 +61,10 @@ export function fetchConfigurations(){
     return dispatch => {
         dispatch(fetchConfig());
         return fetch(URL_CONFIG + API_KEY)
-        .then(response => response.json())
+        .then(response => {
+          if(response.ok) return response.json();
+          throw response;
+        })
         .then(json => dispatch(fetchConfigSuccess(json)))
         .catch(error => dispatch(fetchConfigFailure(error)));
     };
@@ -98,7 +101,10 @@ const debouncedSearch = debounce((dispatch, getState,query) => {
   }
   dispatch(searchMovie(query));
   return fetch(url)
-    .then(response => response.json())
+  .then(response => {
+    if (response.ok) return response.json();
+    throw response;
+  })
     .then(json => json.results)
     .then(data => dispatch(searchMovieSuccess(data)))
     .catch(error => dispatch(searchMovieFailure(error)));
@@ -140,10 +146,13 @@ export function fetchGenresList() {
     const lang = getState().home.selectedLanguage;
     dispatch(fetchGenres());
     return fetch(URL_GENRES + API_KEY + lang)
-      .then(response => response.json())
+    .then(response => {
+      if (response.ok) return response.json();
+      throw response;
+    })
       .then(json => json.genres)
       .then(data => dispatch(fetchGenresSuccess(data)))
-      .catch(error => dispatch(fetchGenresFail(error)));
+      .catch(error => dispatch(fetchGenresFailure(error)));
   };
 }
 //FETCH MOVIES ACTION
@@ -190,7 +199,10 @@ function fetchMovies() {
             url = URL_MOVIES_POPULAR;   
       }
       return fetch(url + API_KEY)
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) return response.json();
+        throw response;
+      })
       .then(json => json.results)
       .then(data => dispatch(fetchMoviesSuccess(data)))
       .catch(error => dispatch(fetchMoviesFailure(error)))
@@ -223,7 +235,10 @@ function fetchMovie() {
     return dispatch => {
       dispatch(fetchMovie());
       return fetch(url_movie)
-        .then(response => response.json())
+      .then(response => {
+        if (response.ok) return response.json();
+        throw response;
+      })
         .then(data => dispatch(fetchMovieSuccess(data)))
         .catch(error => dispatch(fetchMovieFailure(error)));
     };
@@ -253,7 +268,10 @@ function fetchMovie() {
     return function(dispatch) {
       dispatch(fetchReviews());
       return fetch(URL_GENRES + API_KEY)
-        .then(response => response.json())
+      .then(response => {
+        if (response.ok) return response.json();
+        throw response;
+      })
         .then(json => json.results)
         .then(data => {
           dispatch(fetchReviewsSuccess(data));
