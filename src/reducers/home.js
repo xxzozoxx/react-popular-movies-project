@@ -7,7 +7,9 @@ import {
     SELECT_LANGUAGE,
     RESET_SEARCH,
     SEARCH_MOVIE_SUCCESS,
-    SEARCH_MOVIE_FAILURE
+    SEARCH_MOVIE_FAILURE,
+    FETCH_CONFIG_SUCCESS,
+   FETCH_GENRES_SUCCESS
 } from '../actions/types'
 
 
@@ -18,7 +20,9 @@ const initState = {
   error: null,
   searchQuery: "",
   selectedCategory: MOVIES_CATEGORIES.POPULAR,
-  selectedLanguage: MOVIE_LANG_PARAMETER_US
+  selectedLanguage: MOVIE_LANG_PARAMETER_US,
+  configsLoaded: false,
+  genresLoaded: false
 };
 
 export default (state = initState, action) => {
@@ -53,6 +57,10 @@ export default (state = initState, action) => {
       };
     case SEARCH_MOVIE_FAILURE:
       return { ...state, searchError: action.error };
+      case FETCH_CONFIG_SUCCESS:
+      return { ...state, configsLoaded: true };
+    case FETCH_GENRES_SUCCESS:
+      return { ...state, genresLoaded: true };
     default:
       return state;
   }

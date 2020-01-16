@@ -1,25 +1,24 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import HomePage from "./HomePage";
+import MoviePage from "./MoviePage";
+import FilmBar from "./ProgressBarOverlay";
 import "./Main.css";
-import { fetchConfigurations, fetchGenresList } from "../actions";
 
 const Main = props => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchGenresList());
-    dispatch(fetchConfigurations());
-  });
+  const isLoading = useSelector(
+    state => !state.home.genresLoaded && !state.home.configsLoaded
+  );
   return (
     <div className="App">
+      {isLoading && <FilmBar/>}
       <Header appName={props.appName} />
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/about" render={() => <div>About</div>} />
-      </Switch>
+        <Route exact path="/movie/:id" component={MoviePage} />      </Switch>
       <Footer />
     </div>
   );
