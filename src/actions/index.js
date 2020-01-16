@@ -19,9 +19,7 @@ import {
     MOVIE_APPEND_PARAMETER,
     API_KEY_PARAM as API_KEY,
     API_KEY_ALT_PARAM as API_KEY_ALT,
-    MOVIES_CATEGORIES,
-    MOVIE_LANG_PARAMETER_AR,
-    MOVIE_LANG_PARAMETER_US
+    MOVIES_CATEGORIES
   } from "../constants";
   import { debounce } from "lodash";
 
@@ -61,7 +59,7 @@ function fetchConfigFailure(error){
 }
 export function fetchConfigurations(){
     return dispatch => {
-        dispatch(fetchConfig);
+        dispatch(fetchConfig());
         return fetch(URL_CONFIG + API_KEY)
         .then(response => response.json())
         .then(json => dispatch(fetchConfigSuccess(json)))
@@ -92,8 +90,9 @@ function searchMovieFailure (error){
     
 }
 
-const debouncedSearch = debounce((dispatch, query) => {
-  let url = URL_SEARCH + query + API_KEY_ALT;
+const debouncedSearch = debounce((dispatch, getState,query) => {
+  const lang = getState().home.selectedLanguage;
+  let url = URL_SEARCH + query + API_KEY_ALT + lang;
   if (query.length === 0) {
     return dispatch(resetSearchMovies());
   }
@@ -106,8 +105,8 @@ const debouncedSearch = debounce((dispatch, query) => {
 }, 350);
 
 export function searchMovieList(query) {
-  return dispatch => {
-    return debouncedSearch(dispatch, query);
+  return (dispatch,getState) => {
+    return debouncedSearch(dispatch, getState,query);
   };
 }
 export function resetSearchMovies() {
@@ -136,15 +135,16 @@ function fetchGenresFailure(error){
         error
     };
 }
-export function fetchGenresList(){
-    return dispatch => {
-        dispatch(fetchGenres)
-        return fetch(URL_GENRES + API_KEY)
-        .then(response => response.json())
+export function fetchGenresList() {
+  return (dispatch, getState) => {
+    const lang = getState().home.selectedLanguage;
+    dispatch(fetchGenres());
+    return fetch(URL_GENRES + API_KEY + lang)
+      .then(response => response.json())
       .then(json => json.genres)
       .then(data => dispatch(fetchGenresSuccess(data)))
-      .catch(error => dispatch(fetchGenresFailure(error)));
-    };
+      .catch(error => dispatch(fetchGenresFail(error)));
+  };
 }
 //FETCH MOVIES ACTION
 function fetchMovies() {
@@ -192,7 +192,7 @@ function fetchMovies() {
       return fetch(url + API_KEY)
       .then(response => response.json())
       .then(json => json.results)
-      .then(data => dispatch(fetchMovieSuccess(data)))
+      .then(data => dispatch(fetchMoviesSuccess(data)))
       .catch(error => dispatch(fetchMoviesFailure(error)))
     };
   }

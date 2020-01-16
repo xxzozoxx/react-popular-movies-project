@@ -1,4 +1,4 @@
-import { MOVIES_CATEGORIES, MOVIE_LANG_PARAMETER_US } from "../constants";
+import { MOVIES_CATEGORIES, MOVIE_LANG_PARAMETER_US,MOVIE_LANG_PARAMETER_AR } from "../constants";
 import {
     FETCH_MOVIES_SUCCESS,
     FETCH_MOVIES_FAILURE,
@@ -20,7 +20,7 @@ const initState = {
   error: null,
   searchQuery: "",
   selectedCategory: MOVIES_CATEGORIES.POPULAR,
-  selectedLanguage: MOVIE_LANG_PARAMETER_US,
+  selectedLanguage: MOVIE_LANG_PARAMETER_AR,
   configsLoaded: false,
   genresLoaded: false
 };
