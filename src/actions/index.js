@@ -4,7 +4,8 @@ SEARCH_MOVIE,SEARCH_MOVIE_FAILURE,SEARCH_MOVIE_SUCCESS, RESET_SEARCH,
     FETCH_GENRES,FETCH_GENRES_FAILURE,FETCH_GENRES_SUCCESS,
     FETCH_MOVIES,FETCH_MOVIES_FAILURE,FETCH_MOVIES_SUCCESS,
     FETCH_MOVIE,FETCH_MOVIE_FAILURE,FETCH_MOVIE_SUCCESS,
-    FETCH_REVIEWS,FETCH_REVIEWS_FAILURE,FETCH_REVIEWS_SUCCESS
+    FETCH_REVIEWS,FETCH_REVIEWS_FAILURE,FETCH_REVIEWS_SUCCESS,
+    TOGGLE_SETTINGS_MODAL
 } from './types'
 import {
     URL_CONFIG,
@@ -24,6 +25,12 @@ import {
   import { debounce } from "lodash";
 
   //CATEGORY ACTION
+  export function toggleSettingsModal(toggle) {
+    return {
+      type: TOGGLE_SETTINGS_MODAL,
+      toggle
+    };
+  }
   export function changeCategory(category){
       return dispatch => 
       dispatch({
@@ -179,7 +186,8 @@ function fetchMovies() {
   export function fetchMoviesList() {
     return (dispatch,getState) => {
       dispatch(fetchMovies());
-      const category = getState().home.selectedCategory.code;
+      const state = getState();
+      const category = state.home.selectedCategory.code;
       const lang = state.home.selectedLanguage.code;
       let url;
       switch(category){

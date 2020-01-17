@@ -58,7 +58,8 @@ return (
 };
 const MovieItem = ({movie}) => {
   const config = useSelector(state => state.configurations.images);
-  const poster = movie.poster_path ? `${config.base_url.split(":")[1].concat(config.poster_sizes[0])}/${movie.poster_path
+  const poster = movie.poster_path ?  `${config.base_url.split(":")[1].concat(config.poster_sizes[0])}/${
+    movie.poster_path
   }`
   :null;
   return(

@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import HomePage from "./HomePage";
 import MoviePage from "./MoviePage";
 import FilmBar from "./ProgressBarOverlay";
+import SettingsModal from "./SettingsModal";
 import "./Main.css";
 
 const Main = props => {
@@ -14,11 +15,13 @@ const Main = props => {
   );
   return (
     <div className="App">
-      {isLoading && <FilmBar/>}
+      <SettingsModal/>
+      {isLoading}
       <Header appName={props.appName} />
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/movie/:id" component={MoviePage} />      </Switch>
+        <Route exact path="/movie/:id" component={MoviePage} />  
+       </Switch>
       <Footer />
     </div>
   );

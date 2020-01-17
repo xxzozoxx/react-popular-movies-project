@@ -9,7 +9,8 @@ import {
     SEARCH_MOVIE_SUCCESS,
     SEARCH_MOVIE_FAILURE,
     FETCH_CONFIG_SUCCESS,
-   FETCH_GENRES_SUCCESS
+   FETCH_GENRES_SUCCESS,
+   TOGGLE_SETTINGS_MODAL
 } from '../actions/types'
 
 
@@ -62,6 +63,8 @@ export default (state = initState, action) => {
       return { ...state, configsLoaded: true };
     case FETCH_GENRES_SUCCESS:
       return { ...state, genresLoaded: true };
+    case TOGGLE_SETTINGS_MODAL:
+      return {...state,showSettings:action.toggle}
     default:
       return state;
   }
