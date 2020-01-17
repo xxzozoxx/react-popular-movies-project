@@ -16,12 +16,14 @@ const Main = props => {
   return (
     <div className="App">
       <SettingsModal/>
-      {isLoading}
+      {isLoading && <FilmBar />}
       <Header appName={props.appName} />
+      <div className="container mt-2">
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/movie/:id" component={MoviePage} />  
        </Switch>
+       </div>
       <Footer />
     </div>
   );
