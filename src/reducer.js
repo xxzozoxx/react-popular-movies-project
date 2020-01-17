@@ -6,8 +6,8 @@ import configurations from "./reducers/configurations";
 const createRootReducer = history =>
   combineReducers({
     router: connectRouter(history),
-    home,
     genres,
-    configurations
+    configurations,
+    home
   });
   export default createRootReducer;
