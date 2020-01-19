@@ -1,4 +1,4 @@
-import { SELECT_CATEGORY, SELECT_LANGUAGE } from "./actions";
+import { SELECT_CATEGORY, SELECT_LANGUAGE } from "./actions/types";
 
 export const localStorageMiddleware = store => next => action => {
   let settings = JSON.parse(window.localStorage.getItem("settings")) || {};
