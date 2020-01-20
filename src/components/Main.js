@@ -16,7 +16,7 @@ const Main = props => {
   return (
     <div className="App">
       <SettingsModal/>
-      {isLoading && <FilmBar />}
+      {isLoading && <FilmBar/>}
       <Header appName={props.appName} className="App-header" />
       {!isLoading && (
         <div className="container mt-2">

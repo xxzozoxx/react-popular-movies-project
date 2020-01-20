@@ -60,11 +60,11 @@ export default (state = initState, action) => {
     case SEARCH_MOVIE_FAILURE:
       return { ...state, searchError: action.error };
       case FETCH_CONFIG_SUCCESS:
-      return { ...state, configsLoaded: true };
-    case FETCH_GENRES_SUCCESS:
-      return { ...state, genresLoaded: true };
+        return { ...state, configsLoaded: true };
+      case FETCH_GENRES_SUCCESS:
+        return { ...state, genresLoaded: true };
     case TOGGLE_SETTINGS_MODAL:
-      return {...state,showSettings:action.toggle}
+      return {...state,showSettings:action.toggle};
     default:
       return state;
   }
