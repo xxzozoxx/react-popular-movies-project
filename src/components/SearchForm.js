@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { FormControl, Form, Row, Col } from "react-bootstrap";
+import { FormControl, Form, Row, Col, Spinner } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { searchMovieList } from "../actions";
@@ -14,6 +14,7 @@ export const SearchForm = () => {
   //useSelector : allows to extract data from redux store state
   const storeSearchQuery = useSelector(state => state.home.searchQuery); //we get the search query
   const movies = useSelector(state => state.home.searchResults); //we got the list of movies based on searched query
+  const storeIsSearching = useSelector(state => state.home.isSearching);
   const dispatch = useDispatch();
   //initial state of searchQuery is the one stored in storeSearchQuery which is linked to the redux store.
   const [searchQuery,setSearchQuery] = useState(storeSearchQuery);
@@ -35,7 +36,7 @@ export const SearchForm = () => {
     other.method === "type" && handleChange(e.target.value)
   };
 return (
-  <Form className="ml-auto mr-sm-4" id="search-form">
+  <Form className="ml-auto mr-sm-4" id="search-form" onSubmit={e => {e.preventDefault();}}>
     <Autosuggest
     suggestions={movies}
     onSuggestionsFetchRequested={() => {}}
@@ -49,7 +50,12 @@ return (
     renderInputComponent={inputPrpos => (
       <div className="has-search">
         <span className="form-control-feedback">
-          <FontAwesomeIcon icon={faSearch}/>
+          {!storeIsSearching && <FontAwesomeIcon icon={faSearch}/>}
+          {storeIsSearching && (
+            <Spinner animation="border" variant="secondary" size="sm" role="Search Status">
+              <span className="sr-only">Searching...</span>
+            </Spinner>
+          )}
         </span>
         <FormControl {...inputPrpos}/>
       </div>

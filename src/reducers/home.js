@@ -21,10 +21,11 @@ const initState = {
   error: null,
   searchQuery: "",
   selectedCategory:settings.selectedCategory || MOVIES_CATEGORIES.POPULAR,
-  selectedLanguage: settings.selectedLanguage || LANGUAGES.ARABIC,
+  selectedLanguage: settings.selectedLanguage || LANGUAGES.ENGLISH,
   configsLoaded: false,
   genresLoaded: false,
-  showSettings:false
+  showSettings:false,
+  isSearching:false
 };
 
 export default (state = initState, action) => {
@@ -38,6 +39,7 @@ export default (state = initState, action) => {
         ...state,
         searchQuery: action.query,
         searchResults: [],
+        isSearching:true,
         searchError: null
       };
     case RESET_SEARCH:
@@ -55,10 +57,15 @@ export default (state = initState, action) => {
       return {
         ...state,
         searchResults: action.data,
+        isSearching:false,
         searchError: null
       };
     case SEARCH_MOVIE_FAILURE:
-      return { ...state, searchError: action.error };
+      return { 
+        ...state, 
+        isSearching:false,
+        searchError: action.error
+       };
       case FETCH_CONFIG_SUCCESS:
         return { ...state, configsLoaded: true };
       case FETCH_GENRES_SUCCESS:
