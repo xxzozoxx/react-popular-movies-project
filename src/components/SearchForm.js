@@ -21,7 +21,7 @@ export const SearchForm = () => {
   const handleChange = query => {
     //onChange we will update searchQuery
     setSearchQuery(query);
-    dispatch(searchMovieList(query));
+    dispatch(searchMovieList(query.trim()));
   };
   const renderSuggestion = movie => <MovieItem movie={movie}/>
   const inputPrpos = {
@@ -32,7 +32,7 @@ export const SearchForm = () => {
     value:searchQuery,
     autoComplete:"off",
     onChange:(e,other) => 
-    other.method === "type" && handleChange(e.target.value.trim())
+    other.method === "type" && handleChange(e.target.value)
   };
 return (
   <Form className="ml-auto mr-sm-4" id="search-form">
