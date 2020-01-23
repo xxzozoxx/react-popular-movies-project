@@ -1,12 +1,10 @@
 import React, { useCallback } from "react";
 import Color from "color";
 
-window.Color = Color;
 const RatingCircle = ({
     width,
     value,
     color = "#32a852",
-    children,
     id,
     className
 }) => {
@@ -20,7 +18,7 @@ const RatingCircle = ({
             canvas.height = pixelRatio * diameter;
             canvas.style.width = diameter + "px";
             canvas.style.height = diameter + "px";
-            console.log("Drawing..");
+            
             const context = canvas.getContext("2d");
             context.scale(pixelRatio, pixelRatio);
             let loaded = 0;
