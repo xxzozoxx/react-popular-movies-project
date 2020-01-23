@@ -22,15 +22,21 @@ const MoviePage = props => {
     const id = useParams().id;
 
     useEffect(() => {
+      const abortController = new AbortController();
+      const signal = abortController.signal;
+      //resting the state when id or language is changed 
+      setState({movie:null,error:null,isLoading:true});
+
   const page = document.getElementById("movie-page");
   page.focus();
   if(page.scrollIntoView) page.scrollIntoView();
   const url_movie = URL_MOVIE +"/" + id + API_KEY + MOVIE_APPEND_PARAMETER + lang;
   setState({movie:null, isLoading:true,error:null});
-  fetchJson(url_movie)
+  fetchJson(url_movie,{signal:signal})
   .then(json => setState({error:null ,movie:json, isLoading:false}))
   .catch(err => setState({err:err.message,isLoading:false,movie:null})
   );
+  return () => { abortController.abort(); };
 },[id,lang]);
   
       return(
