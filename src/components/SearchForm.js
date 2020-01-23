@@ -36,7 +36,9 @@ export const SearchForm = () => {
     other.method === "type" && handleChange(e.target.value)
   };
 return (
-  <Form className="ml-auto mr-sm-4" id="search-form" onSubmit={e => {e.preventDefault();}}>
+  <Form className="ml-auto mr-sm-4" id="search-form" 
+  onSubmit={e => {e.preventDefault();}}
+  >
     <Autosuggest
     suggestions={movies}
     onSuggestionsFetchRequested={() => {}}
@@ -65,7 +67,7 @@ return (
 );
 };
 const MovieItem = ({movie}) => {
-  const config = useSelector(state => state.configurations.images);
+  const config = useSelector(state => state.configurations);
   const { poster } = getImagesUrl(movie, config);
   return(
     <Row className = "p-1 align-items-center">

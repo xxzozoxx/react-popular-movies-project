@@ -75,30 +75,31 @@ export function fetchConfigurations(){
 
 }
 //SEARCH MOVIE ACTION
-function searchMovie(query){
-    return {
-        type:SEARCH_MOVIE,
-        query
-    }
-}
-function searchMovieSuccess(data,query){
-    return{
-        type:SEARCH_MOVIE_SUCCESS,
-        data,
-        query
-
-    }
-}
-function searchMovieFailure (error){
-    return {
-         type:SEARCH_MOVIE_FAILURE,
-         error
-    }
-    
+function searchMovie(query) {
+  return {
+    type: SEARCH_MOVIE,
+    query
+  };
 }
 
-const debouncedSearch = debounce((dispatch, getState,query) => {
+function searchMovieSuccess(data, query) {
+  return {
+    type: SEARCH_MOVIE_SUCCESS,
+    data,
+    query
+  };
+}
+
+function searchMovieFailure(error) {
+  return {
+    type: SEARCH_MOVIE_FAILURE,
+    error
+  };
+}
+
+const debouncedSearch = debounce((dispatch, getState, query) => {
   const lang = getState().home.selectedLanguage.code;
+
   let url = URL_SEARCH + query + API_KEY_ALT + lang;
   if (query.length === 0) {
     return dispatch(resetSearchMovies());
@@ -110,8 +111,8 @@ const debouncedSearch = debounce((dispatch, getState,query) => {
 }, 350);
 
 export function searchMovieList(query) {
-  return (dispatch,getState) => {
-    return debouncedSearch(dispatch, getState,query);
+  return (dispatch, getState) => {
+    return debouncedSearch(dispatch, getState, query);
   };
 }
 export function resetSearchMovies() {
