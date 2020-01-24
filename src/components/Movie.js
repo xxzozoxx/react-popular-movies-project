@@ -21,6 +21,7 @@ export const Movie = ({ movie }) => {
    return(
      <>
      <OverView movie={movie} images={images} id="overview"/>
+     <Cast cast={movie.credits.cast.slice(0, 5)} id="cast" />
      <PageNavigator
           offsetElementTop={0}
           offsetContainerTop={0}
