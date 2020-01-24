@@ -66,23 +66,23 @@ return (
   </Form>
 );
 };
-const MovieItem = ({movie}) => {
+const MovieItem = ({ movie }) => {
   const config = useSelector(state => state.configurations);
   const { poster } = getImagesUrl(movie, config);
-  return(
-    <Row className = "p-1 align-items-center">
-      <Col xs={1}>
+  return (
+    <Row className="p-1 align-items-center movie-suggestion-item">
+      <Col sm={2}>
         {poster && (
           <img
-          src={Object.values(poster)[0]}
-          alt={movie.title + "backdrop"}
-          style={{ height: 65, border: "1px solid #a4a4a4" }}
+            src={Object.values(poster)[0]}
+            alt={movie.title + " backdrop"}
+            style={{ height: 65, border: "1px solid #a4a4a4" }}
           />
-          )}
+        )}
       </Col>
-      <Col  xs={12} sm={10} className="p-2">
-      <h6  className="my-0 mx-1">{movie.title}</h6>
-      <p className="mx-1">
+      <Col xs={12} sm={10} className="p-2">
+        <h6 className="my-0 mx-1">{movie.title}</h6>
+        <p className="mx-1">
           ({movie.release_date ? movie.release_date.split("-")[0] : "Unknown"})
         </p>
       </Col>
