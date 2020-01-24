@@ -30,6 +30,65 @@ export const Movie = ({ movie }) => {
      </>
    )
   };
+const Cast = ({cast,id}) => {
+  return(
+    <div className="movie-cast py-3" id={id}>
+      <Container>
+        <Row>
+          <Col>
+          <h4>Top Billed Cast</h4>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+          <div 
+          className={"movie-cast-container" + (cast.length > 3 ? "justify-content-md-between" : "")
+        }>
+          {cast.map(char => (
+            <Card key={char.cast_id}>
+              <Card.Img
+              variant="top"
+              src={
+                char.profile_path 
+                ? "//images.tmdb.org/t/p/w185" + char.profile_path
+                : "/imgs/profile-placeholder.jpg"
+              }/>
+              <Card.Body>
+                <h6>{char.name}</h6>
+                <div>
+                  <i>as</i> {char.character}
+                </div>
+              </Card.Body>
+            </Card>
+          ))}
+        </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const OverView = ({movie,images,id}) => {
   const [prominentColor,setProminentColor] = useState(null);
 
