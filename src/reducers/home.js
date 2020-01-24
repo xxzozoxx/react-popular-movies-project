@@ -1,5 +1,6 @@
 import { MOVIES_CATEGORIES,LANGUAGES } from "../constants";
 import {
+    FETCH_MOVIES,
     FETCH_MOVIES_SUCCESS,
     FETCH_MOVIES_FAILURE,
     SEARCH_MOVIE,
@@ -25,15 +26,18 @@ const initState = {
   configsLoaded: false,
   genresLoaded: false,
   showSettings:false,
+  isLoadingMovies:false,
   isSearching:false
 };
 
 export default (state = initState, action) => {
   switch (action.type) {
+    case FETCH_MOVIES:
+      return {...state,isLoadingMovies:true};
     case FETCH_MOVIES_SUCCESS:
-      return { ...state, movies: action.data };
+      return { ...state, movies: action.data ,isLoadingMovies:false};
     case FETCH_MOVIES_FAILURE:
-      return { ...state, error: action.error };
+      return { ...state, error: action.error,isLoadingMovies:false };
     case SEARCH_MOVIE:
       return {
         ...state,
