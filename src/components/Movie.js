@@ -1,42 +1,136 @@
-import React ,{useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import languages from "../constants/languages";
-import { find,filter } from "lodash";
-import { getImagesUrl, isNarrowScreen
-} from "../utils";
-import { Badge, Container, Row, Col,Card } from "react-bootstrap";
+import { find, filter } from "lodash";
+import { getImagesUrl, isNarrowScreen, fetchJson } from "../utils";
+import { Badge, Container, Row, Col, Card } from "react-bootstrap";
 import PageNavigator from "./PageNavigator";
 import RatingCircle from "./RatingCircle";
 import ColorThief from "colorthief";
 import Color from "color";
-import { URL_YOUTUBE } from "../constants";
+import {
+  URL_YOUTUBE,
+  URL_REVIEWS,
+  API_KEY_PARAM as API_KEY,
+  URL_MOVIE
+} from "../constants";
 
+/* Movie body will have these sections
+    - Overview
+    - Cast
+    - Meta details:
+        - Budget
+        - Revenue
+        - Run time
+        - Production Countries
+        - Status & date
+        - Has a sequel? https://www.themoviedb.org/collection/645
+        - Language
+    - Reviews
+    - Recommendations
+*/
 
 export const Movie = ({ movie }) => {
-   document.title = movie.title;
-   //getting configurations from store
-   const config = useSelector(state => state.configurations);
- //get movie images
-   const images = getImagesUrl(movie,config);
+  // Set the window title to the movie title
+  document.title = movie.title;
 
+  const config = useSelector(state => state.configurations);
 
-   return(
-     <>
-     <OverView movie={movie} images={images} id="overview"/>
-     <Cast cast={movie.credits.cast.slice(0, 5)} id="cast" />
-     <Extra movie={movie} id="extra"/>
-     <PageNavigator
-          offsetElementTop={0}
-          offsetContainerTop={0}
-          offsetContainerBottom={0}
-          items={["Overview", "Cast", "Extra", "Reviews", "Recommendations"]}
-        />
-     </>
-   )
+  const images = getImagesUrl(movie, config);
+
+  return (
+    <>
+      <Overview movie={movie} images={images} id="overview" />
+      <Cast cast={movie.credits.cast.slice(0, 5)} id="cast" />
+      <Extra movie={movie} id="extra" />
+      <Reviews movie={movie} id="reviews" />
+      <PageNavigator
+        offsetElementTop={0}
+        offsetContainerTop={0}
+        offsetContainerBottom={0}
+        items={["Overview", "Cast", "Extra", "Reviews", "Recommendations"]}
+      />
+    </>
+  );
+};
+
+const Reviews = ({ movie, id }) => {
+  const [reviews, setReviews] = useState([]);
+  const [expandedList, setExpandedList] = useState({});
+
+  useEffect(() => {
+    const url_reviews = URL_MOVIE + "/" + movie.id + URL_REVIEWS + API_KEY;
+    setReviews([]);
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    fetchJson(url_reviews, { signal: signal })
+      .then(json => setReviews(json.results))
+      .catch(err => console.log(err));
+
+    return () => {
+      //clean up
+      abortController.abort();
+    };
+  }, [movie]);
+
+  const handleExpand = idx => {
+    const currentIdxState = expandedList[idx] ? expandedList[idx] : false;
+    setExpandedList({ ...expandedList, [idx]: !currentIdxState });
   };
- 
-  
-const Extra = ({movie,id}) => {
+
+  return (
+    <div className="movie-reviews py-3" id={id}>
+      <Container>
+        <Row>
+          <Col>
+            <h4>Reviews</h4>
+          </Col>
+        </Row>
+        {!reviews.length && (
+          <Row>
+            <Col>No reviews...</Col>
+          </Row>
+        )}
+        {reviews.map((review, idx) => {
+          const needsTrimming =
+            review.content.length >= 300 && !expandedList[idx];
+
+          const content = needsTrimming
+            ? review.content.substr(0, 300)
+            : review.content;
+
+          return (
+            <Row key={review.id}>
+              <Col>
+                <div className="review-item m-3">
+                  <h6>{review.author}</h6>
+                  <p>
+                    {content}
+                    {needsTrimming ? "..." : ""}
+                  </p>
+                  <div className="d-flex justify-content-end">
+                    <button
+                      onClick={e => {
+                        handleExpand(idx);
+                      }}
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                    >
+                      {needsTrimming ? "See more" : "See less"}
+                    </button>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          );
+        })}
+      </Container>
+    </div>
+  );
+};
+
+const Extra = ({ movie, id }) => {
   const usReleaseDate = find(
     movie.release_dates.results,
     rel => rel.iso_3166_1 === "US"
@@ -103,7 +197,7 @@ const Extra = ({movie,id}) => {
         {trailers.length > 0 && (
           <Row>
             <Col>
-            <h6>Trailers</h6>
+              <h6>Trailers</h6>
             </Col>
           </Row>
         )}
@@ -121,7 +215,8 @@ const Extra = ({movie,id}) => {
       </Container>
     </div>
   );
-} ;
+};
+
 const YouTubeEmbed = ({ title, video, width = 320, height = 180 }) => (
   <iframe
     title={title}
@@ -131,99 +226,107 @@ const YouTubeEmbed = ({ title, video, width = 320, height = 180 }) => (
     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
     allowFullScreen="on"
   />
-); 
-const Cast = ({cast,id}) => {
-  return(
+);
+
+const Cast = ({ cast, id }) => {
+  return (
     <div className="movie-cast py-3" id={id}>
       <Container>
         <Row>
           <Col>
-          <h4>Top Billed Cast</h4>
+            <h4>Top Billed Cast</h4>
           </Col>
         </Row>
         <Row>
           <Col>
-          <div 
-          className={"movie-cast-container" + (cast.length > 3 ? "justify-content-md-between" : "")
-        }>
-          {cast.map(char => (
-            <Card key={char.cast_id}>
-              <Card.Img
-              variant="top"
-              src={
-                char.profile_path 
-                ? "//images.tmdb.org/t/p/w185" + char.profile_path
-                : "/imgs/profile-placeholder.jpg"
-              }/>
-              <Card.Body>
-                <h6>{char.name}</h6>
-                <div>
-                  <i>as</i> {char.character}
-                </div>
-              </Card.Body>
-            </Card>
-          ))}
-        </div>
+            <div
+              className={
+                "movie-cast-container" +
+                (cast.length > 3 ? " justify-content-md-between" : "")
+              }
+            >
+              {cast.map(char => (
+                <Card key={char.cast_id}>
+                  <Card.Img
+                    variant="top"
+                    src={
+                      char.profile_path
+                        ? "//images.tmdb.org/t/p/w185" + char.profile_path
+                        : "/imgs/profile-placeholder.jpg"
+                    }
+                  />
+                  <Card.Body>
+                    <h6>{char.name}</h6>
+                    <div>
+                      <i>as</i> {char.character}
+                    </div>
+                  </Card.Body>
+                </Card>
+              ))}
+            </div>
           </Col>
         </Row>
       </Container>
     </div>
-  )
-}
+  );
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const OverView = ({movie,images,id}) => {
-  const [prominentColor,setProminentColor] = useState(null);
+const Overview = ({ movie, images, id }) => {
+  // Backdrop overlay color state
+  const [prominentColor, setProminentColor] = useState(null);
 
   const original_language = find(
     languages,
     l => l.iso_639_1 === movie.original_language
-   ).english_name;
-   const relase_date = movie.relase_date ? movie.relase_date.split("-")[0] : "unknown";
-let backdropSize = isNarrowScreen() ? "w780" : "w1280";
-  
-  useEffect(() => {
-    if(!images.backdrop) return;
+  ).english_name;
 
+  const release_date = movie.release_date
+    ? movie.release_date.split("-")[0]
+    : "Unknown";
+
+  // Load background based on window width
+  let backdropSize = isNarrowScreen() ? "w780" : "w1280";
+
+  // This will be used to extract the prominent color from the
+  // backdrop image to apply a pleasant customization to the page
+  useEffect(() => {
+    if (!images.backdrop) return;
+
+    // We create this image only to extract colors from it
     const img = new Image();
 
+    //This line is required for the color thief library to work
     img.crossOrigin = "anonymous";
+
     const onLoad = e => {
+      // Get the prominent color and saturate it
       let color = Color.rgb(new ColorThief().getColor(e.target)).saturate(0.8);
+
+      // Adjust the color, since the text is white so if light color darken it
       if (color.isLight()) color = color.darken(0.5);
+
+      // Set the state
       setProminentColor(color);
     };
-    img.addEventListener("load",onLoad);
-    img.src = images.backdrop.w300;
-    return () => {
-      img.removeEventListener("load",onLoad);
-    };
-  },[images]);
 
+    // We tell the image, when you load, call the function that extracts the colors
+    img.addEventListener("load", onLoad);
+
+    // This will init image loading
+    img.src = images.backdrop.w300;
+
+    return () => {
+      //clean up the listener
+      img.removeEventListener("load", onLoad);
+    };
+  }, [images]); // adding [images] to the useCallback arguments is to make sure the callback will be called only if images change
+
+  // Main div styling
   const style = {};
-  if(images.backdrop)
-  style.backgroundImage = `url(${images.backdrop[backdropSize]})`;
-  
-  return(
+  if (images.backdrop)
+    style.backgroundImage = `url(${images.backdrop[backdropSize]})`;
+
+  return (
     <div className="movie-overview" style={style} id={id}>
       <div
         className={images.backdrop ? "has-backdrop" : ""}
